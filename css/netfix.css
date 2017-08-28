@@ -1,0 +1,39 @@
+.nf-overlay:before {
+  content: " ";
+  z-index: 10;
+  display: block;
+  position: absolute;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(10, 240, 5, 0.50);
+  pointer-events: none;
+}
+
+.nf-rating {
+  color: #e5e5e5;
+  font-size: 1vw;
+  font-weight: 700;
+  text-align: right;
+  /* -webkit-text-stroke-width: 1px; */
+  /* -webkit-text-stroke-color: black; */
+  text-shadow: 0 1px 1px rgba(0,0,0,.5);
+  line-height: 1.4;
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  /* padding: 1em; */
+  padding-right: 0.3em;
+  white-space: nowrap;
+  overflow: hidden;
+  -o-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+  /* background: rgba(229, 229, 229, 0.00); */
+  /* background-image: linear-gradient(to top,rgba(0,0,0,0) 0,rgba(0,0,0,0) 33%,rgba(0,0,0,.85) 100%); */
+}
+
+.nf-rating-big {
+  font-size: 1.6vw;
+}
