@@ -5,7 +5,7 @@ var TMDBAPI = (function() {
   const tv_search = "search/tv";
   const multi_search = "search/multi";
 
-  function _getInfo (type, title, year, cb) {
+  function getInfo (type, title, year, cb) {
     let search_type = '';
     switch(type) {
       case 'movie':
@@ -28,11 +28,18 @@ var TMDBAPI = (function() {
     Utils.ajaxJson(api_url, 'GET', data, cb);
   }
 
-  const _throttledGetInfo = _.rateLimit(_getInfo, 200);
+  const _throttledGetInfo = _.rateLimit(getInfo, 500);
+  const _throttledHiPriorityGetInfo = _.rateLimit(getInfo, 50);
+
+  function getInfoPriority(type, title, year, cb, priority=false) {
+    if (priority) _throttledHiPriorityGetInfo(type, title, year, cb)
+    else _throttledGetInfo(type, title, year, cb);
+  }
+
 
   return {
-    getMovie: _.partial(_throttledGetInfo, 'movie', _, _, _),
-    getShow: _.partial(_throttledGetInfo, 'tv', _, _, _),
-    getInfo: _.partial(_throttledGetInfo, '', _, _, _)
+    getMovie: _.partial(getInfoPriority, 'movie', _, _, _, _),
+    getShow: _.partial(getInfoPriority, 'tv', _, _, _, _),
+    getInfo: _.partial(getInfoPriority, '', _, _, _, _)
   };
 })();

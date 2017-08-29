@@ -37,7 +37,7 @@ function rateVisibleItems(el) {
   });
 }
 
-function rateSingleItem(el, insert_selector, check_visibility=true, rating_class='') {
+function rateSingleItem(el, insert_selector, check_visibility=true, rating_class='', priority=false) {
   shouldRender = !check_visibility || $(el).visible(true);
 
   if (shouldRender) {
@@ -58,13 +58,14 @@ function rateSingleItem(el, insert_selector, check_visibility=true, rating_class
                 <div class="ratings">
                   <div class="empty-stars"></div>
                   <div class="full-stars" style="width:${rating*10}%"></div>
-                  <div class='ratings-text'>${rating.toFixed(1)}</div>
+                  <div class='ratings-text'>${Math.round(rating * 10) / 10}</div>
                 </div>
               </div>
               `
             );
+            // $(el).find('.nf').animate({ opacity: 1 }, 500);
           }
-        });
+        }, priority);
       } else {
         console.warn(`ID '${id}' not found in Netflix DB!`);
       }
@@ -81,7 +82,7 @@ function addSliderObservers() {
       rateSingleItem(this, '.ptrack-content');
     })
     .observe('added', '.slider-item .bob-card', function(record) {
-      rateSingleItem(this, '.bob-overlay', false, 'nf-rating-big');
+      rateSingleItem(this, '.bob-overlay', false, 'nf-rating-big', true);
     });
 }
 
@@ -90,7 +91,7 @@ function checkWindowHrefChange() {
   if (window.location.href != href) {
     debouncedRateAll();
     href = window.location.href;
-    setTimeout(addSliderObservers, 500);
+    // setTimeout(addSliderObservers, 500);
   }
 }
 
@@ -103,10 +104,12 @@ function main() {
   rateVisibleItems($('.mainView'));
 
   // Event listeners
+  addSliderObservers();
   $(window).resize(debouncedRateAll);
   $(window).scroll(debouncedRateAll);
   setInterval(checkWindowHrefChange, 2000);
-  addSliderObservers();
+  $('.mainView').observe('added', '.sliderContent', addSliderObservers)
+
 }
 
 

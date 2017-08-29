@@ -26,14 +26,16 @@
 }
 
 .nf {
+  opacity: 1;
   position: absolute;
   top: 0;
   right: 0;
   left: 0;
   text-align: right;
-  margin-top: -0.7vw;
+  margin-top: -0.9vw;
   margin-right: -0.2vw;
   font-size: 1em;
+  letter-spacing: -2px;
 }
 
 .ratings {
@@ -51,6 +53,7 @@
     rgba(0, 0, 0, 1) 0%,
     rgba(0, 0, 0, 1) 5%,
     rgba(0, 0, 0, 0) 100%);
+  -webkit-transform: rotate(8deg);
 }
 
 .ratings-text {

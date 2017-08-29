@@ -6,12 +6,20 @@ var CardFactory = (function() {
       this.year = year;
       this.isShow = isShow;
       this.rating = 'notfetched';
+      this.ratingsCbCache = [];
     }
 
-    getRating(cb) {
+    getRating(cb, priority=false) {
       if (this.rating == 'notfetched') {
         // get function for movie or show
         let tmdbfunc = this.isShow ? TMDBAPI.getShow : TMDBAPI.getMovie;
+        // store callback in cache
+        this.ratingsCbCache.push(cb);
+        // check if call was already done
+        if (this.ratingsCbCache.length > 1) {
+          // console.log('Callbacks: ', this.ratingsCbCache.length);
+          return;
+        }
         // get info
         tmdbfunc(this.title, this.year, (data) => {
           if (data.results.length > 0) {
@@ -21,8 +29,10 @@ var CardFactory = (function() {
             console.warn(`Data not found in TMDB (${this.id}): ${this.title} (${this.year})`);
           }
           // return rating
-          cb(this.rating);
-        });
+          for (let i = 0, len = this.ratingsCbCache.length; i < len; i++) {
+            this.ratingsCbCache.shift()(this.rating)
+          }
+        }, priority);
       } else {
         // return cached rating
         cb(this.rating);
@@ -40,7 +50,12 @@ var CardFactory = (function() {
       cb(card);
     } else {
       NetflixAPI.getSingleVideoInfo(videoId, ['title', 'releaseYear', 'episodeCount'], (data) => {
-        card = null;
+        let card = null;
+        card = cardsCache.get(videoId);
+        if (card) {
+          cb(card);
+          return;
+        }
         if (data) {
           card = new Card(videoId, data.title, data.releaseYear, Number.isInteger(data.episodeCount));
         } else {
