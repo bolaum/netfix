@@ -1,6 +1,6 @@
 var TMDBAPI = (function() {
   const url_base = "https://api.themoviedb.org/3/";
-  const key = "API-KEY";
+  const key = "ef45eea5293ebc5248230c576527820f";
   const movie_search = "search/movie";
   const tv_search = "search/tv";
   const multi_search = "search/multi";

@@ -2,19 +2,18 @@
   "manifest_version": 2,
 
   "name": "Netfix",
-  "description": "Adds ratings to Netflix",
-  "version": "0.1",
+  "description": "Adds TMDB ratings to Netflix interface.",
+  "version": "0.5",
 
   "icons": {
-    "16": "res/icon.png",
-    "48": "res/icon.png",
-    "128": "res/icon.png"
+    "16": "res/icon16.png",
+    "48": "res/icon48.png",
+    "128": "res/icon128.png"
   },
 
   "background": {
     "scripts": [
       "lib/hot-reload.js",
-      "lib/jquery-3.2.1.min.js",
       "js/bg.js"
     ]
   },
@@ -39,6 +38,7 @@
   ],
 
   "permissions": [
+    "*://api.themoviedb.org/*",
     "management"
   ]
 }
