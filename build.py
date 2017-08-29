@@ -2,6 +2,7 @@
 import os
 import shutil
 import json
+import zipfile
 from collections import OrderedDict
 
 # Constants
@@ -67,3 +68,16 @@ if __name__ == '__main__':
             for fn in entry[ftype]:
                 create_dist_dirs(fn)
                 shutil.copy(fn, os.path.join(DIST_PATH, fn))
+
+    # creating zip file
+    zipfn = "netfix_%s.zip" % mf['version']
+    print('Creating "%s"...' % zipfn)
+    zf = zipfile.ZipFile(os.path.join(DIST_PATH, zipfn), "w")
+    for dirname, _, files in os.walk(DIST_PATH):
+        dirname = os.path.relpath(dirname, DIST_PATH)
+        if dirname != '.':
+            zf.write(dirname)
+        for fn in files:
+            if fn == zipfn: continue
+            zf.write(os.path.join(DIST_PATH, dirname, fn), os.path.join(dirname, fn))
+    zf.close()

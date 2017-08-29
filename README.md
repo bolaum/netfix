@@ -1,8 +1,21 @@
-# Netfix (Chrome Extension)
+# Netfix (chrome extension)
 
-A Chrome Extension to add TMDB ratings to Netflix interface, because why not.
+A chrome extension to add TMDB ratings to Netflix interface, because why not.
 
 This was inspired by a crappy *Match* system and lots of broken extensions in the store.
+
+## Add to Chrome
+
+You can add it directly from the repo. 
+
+* clone the repo: `git clone https://github.com/bolaum/netfix`
+* open chrome
+* navigate to `chrome://extensions/`
+* check *"Developer mode"*
+* click *"Load unpacked extension..."*
+* point to the root of the cloned repo
+
+The `build.py` script removes some development files (such as `hot-reload.js`) from the manifest and generates a clean zip in the `dist/` directory. There's no need to run, just follow the above instructions.
 
 ## Screenshots
 
@@ -17,6 +30,10 @@ and ptBR
 ## Bugs and issues
 
 This is currently experimental e needs testing. Please feel free to make a PR or report any issues.
+
+## TODO
+
+TBD
 
 ## Dependencies and Attributions
 
