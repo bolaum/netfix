@@ -37,7 +37,7 @@ function rateVisibleItems(el) {
   });
 }
 
-function rateSingleItem(el, insert_selector, check_visibility=true, rating_class='nf-rating') {
+function rateSingleItem(el, insert_selector, check_visibility=true, rating_class='') {
   shouldRender = !check_visibility || $(el).visible(true);
 
   if (shouldRender) {
@@ -52,7 +52,17 @@ function rateSingleItem(el, insert_selector, check_visibility=true, rating_class
             // check if div was already inserted
             if ($(parent).find('.nf').length > 0) return;
             // insert div
-            $(el).find(insert_selector).append(`<div class="nf ${rating_class}">${rating}</div>`);
+            $(el).find(insert_selector).append(
+              `
+              <div class="nf ${rating_class}">
+                <div class="ratings">
+                  <div class="empty-stars"></div>
+                  <div class="full-stars" style="width:${rating*10}%"></div>
+                  <div class='ratings-text'>${rating.toFixed(1)}</div>
+                </div>
+              </div>
+              `
+            );
           }
         });
       } else {
@@ -64,30 +74,39 @@ function rateSingleItem(el, insert_selector, check_visibility=true, rating_class
 
 const debouncedRateAll = _.partial(_.debounce(rateVisibleItems, 1000), $('.mainView'));
 
+function addSliderObservers() {
+  $('.sliderContent')
+    .observe('added', '.slider-item', function(record) {
+      // Observe if elements matching '.sliderContent .slider-item' have been added
+      rateSingleItem(this, '.ptrack-content');
+    })
+    .observe('added', '.slider-item .bob-card', function(record) {
+      rateSingleItem(this, '.bob-overlay', false, 'nf-rating-big');
+    });
+}
+
+var href = window.location.href;
+function checkWindowHrefChange() {
+  if (window.location.href != href) {
+    debouncedRateAll();
+    href = window.location.href;
+    setTimeout(addSliderObservers, 500);
+  }
+}
+
 function main() {
   SHAKTI_BUILD = $('script:contains("BUILD_IDENTIFIER")').text().match(/(?:"BUILD_IDENTIFIER":")(.*?)(?:")/)[1];
   LANG = $('#appMountPoint > div').attr('lang');
 
-  console.clear();
-  // debugger;
-
+  // console.clear();
 
   rateVisibleItems($('.mainView'));
 
-
+  // Event listeners
   $(window).resize(debouncedRateAll);
   $(window).scroll(debouncedRateAll);
-
-  $('.sliderContent')
-    .observe('added', '.slider-item', function(record) {
-      // Observe if elements matching '.sliderContent .slider-item' have been added
-      // $(this).observe({ attributes: true, attributeFilter: ['class'] }, function(record) {
-        rateSingleItem(this, '.ptrack-content');
-      // });
-    })
-    .observe('added', '.slider-item .bob-card', function(record) {
-      rateSingleItem(this, '.bob-overlay', false, 'nf-rating nf-rating-big');
-    })
+  setInterval(checkWindowHrefChange, 2000);
+  addSliderObservers();
 }
 
 
