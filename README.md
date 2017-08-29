@@ -6,14 +6,14 @@ This was inspired by a crappy *Match* system and lots of broken extensions in th
 
 ## Add to Chrome
 
-You can add it directly from the repo. 
+Install from the [Chrome Web Store](https://chrome.google.com/webstore/detail/netfix/bdihekkpnckbmgafgoedabbebpafgfci/) or add it directly using the repo:
 
-* clone the repo: `git clone https://github.com/bolaum/netfix`
+* clone it: `git clone https://github.com/bolaum/netfix`
 * open chrome
 * navigate to `chrome://extensions/`
 * check *"Developer mode"*
 * click *"Load unpacked extension..."*
-* point to the root of the cloned repo
+* point to root of the cloned repo
 
 The `build.py` script removes some development files (such as `hot-reload.js`) from the manifest and generates a clean zip in the `dist/` directory. There's no need to run, just follow the above instructions.
 
