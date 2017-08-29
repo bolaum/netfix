@@ -28,14 +28,13 @@ var TMDBAPI = (function() {
     Utils.ajaxJson(api_url, 'GET', data, cb);
   }
 
-  const _throttledGetInfo = _.rateLimit(getInfo, 500);
-  const _throttledHiPriorityGetInfo = _.rateLimit(getInfo, 50);
+  const _throttledGetInfo = _.rateLimit(getInfo, 500, true);
+  const _throttledHiPriorityGetInfo = _.rateLimit(getInfo, 50, true);
 
   function getInfoPriority(type, title, year, cb, priority=false) {
     if (priority) _throttledHiPriorityGetInfo(type, title, year, cb)
     else _throttledGetInfo(type, title, year, cb);
   }
-
 
   return {
     getMovie: _.partial(getInfoPriority, 'movie', _, _, _, _),

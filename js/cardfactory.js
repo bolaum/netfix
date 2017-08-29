@@ -1,12 +1,18 @@
 var CardFactory = (function() {
   class Card {
-    constructor(id, title, year, isShow) {
+    constructor(id) {
       this.id = id;
-      this.title = title;
-      this.year = year;
-      this.isShow = isShow;
       this.rating = 'notfetched';
+      this.data = 'notfetched';
+      this.dataReadyCbCache = [];
       this.ratingsCbCache = [];
+      this.objid = Utils.makeid(10);
+      this.priorityFetchCalled = false;
+    }
+
+    onDataReady(cb) {
+      this.dataReadyCbCache.push(cb);
+      this._fetchNfData()
     }
 
     getRating(cb, priority=false) {
@@ -16,10 +22,9 @@ var CardFactory = (function() {
         // store callback in cache
         this.ratingsCbCache.push(cb);
         // check if call was already done
-        if (this.ratingsCbCache.length > 1) {
-          // console.log('Callbacks: ', this.ratingsCbCache.length);
-          return;
-        }
+        if (this.priorityFetchCalled || (this.ratingsCbCache.length > 1 && !priority)) return;
+        // if (priority) console.debug('PRIORITY CALL FOR', this.title);
+        this.priorityFetchCalled = priority;
         // get info
         tmdbfunc(this.title, this.year, (data) => {
           if (data.results.length > 0) {
@@ -38,33 +43,52 @@ var CardFactory = (function() {
         cb(this.rating);
       }
     }
+
+    // PRIVATE
+
+    _runOnDataCbs() {
+      for(let i = 0, len = this.dataReadyCbCache.length; i < len; i++) {
+        this.dataReadyCbCache.shift()(this.data == null ? null : this);
+      }
+    }
+
+    _fetchNfData() {
+      if (this.data == 'notfetched') {
+        this.data = 'fetching';
+        NetflixAPI.getSingleVideoInfo(this.id, ['title', 'releaseYear', 'episodeCount'], (data) => {
+          if (data) {
+            this.data = data;
+            this.title = data.title;
+            this.year = data.year;
+            this.isShow = Number.isInteger(data.episodeCount);
+          } else {
+            this.data = null;
+            console.warn(`NetflixAPI returned null value for ${this.id}!`);
+          }
+          this._runOnDataCbs();
+        });
+        return;
+      }
+
+      if (this.data == 'fetching') return;
+
+      this._runOnDataCbs();
+    }
   }
 
   var cardsCache = new Map();
 
   function create(videoId, cb) {
+    let card = null;
+    // return null if id empty
     if (!videoId) cb(null);
-
-    let card = cardsCache.get(videoId);
-    if (card) {
-      cb(card);
-    } else {
-      NetflixAPI.getSingleVideoInfo(videoId, ['title', 'releaseYear', 'episodeCount'], (data) => {
-        let card = null;
-        card = cardsCache.get(videoId);
-        if (card) {
-          cb(card);
-          return;
-        }
-        if (data) {
-          card = new Card(videoId, data.title, data.releaseYear, Number.isInteger(data.episodeCount));
-        } else {
-          console.debug('NetflixAPI returned null value!');
-        }
-        cardsCache.set(videoId, card);
-        cb(card);
-      });
+    // check cards cache
+    if (!(card = cardsCache.get(videoId))) {
+      // create card, which will call 'cb' when data is ready
+      card = new Card(videoId);
+      cardsCache.set(videoId, card)
     }
+    card.onDataReady(cb);
   }
 
   return {

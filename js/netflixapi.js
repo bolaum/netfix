@@ -12,7 +12,7 @@ var NetflixAPI = (function() {
     Utils.ajaxJson(api_url, 'POST', data, cb);
   }
 
-  const _getVideoInfoLimited = _.rateLimit(_getVideoInfo, 100);
+  const _getVideoInfoLimited = _.rateLimit(_getVideoInfo, 100, true);
 
   function _accVideoIds(id, types, cb) {
     // types indexer
