@@ -29,7 +29,7 @@ and ptBR
 
 ## Bugs and issues
 
-This is currently experimental e needs testing. Please feel free to make a PR or report any issues.
+This is currently experimental and needs testing. Please feel free to make a PR or report any issues.
 
 ## TODO
 
