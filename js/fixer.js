@@ -10,21 +10,17 @@ $(function () {
 });
 
 function getVideoId(el) {
-  // search for track content in children
-  let eltc = $(el).find('.ptrack-content');
+  // search title card in chilren
+  let eltc = $(el).find('.smallTitleCard');
   if (eltc.length == 0) {
-    // search for track content in parents
-    eltc = $(el).parents('.slider-item').find('.ptrack-content');
+    // search for title card in parents
+    eltc = $(el).parents('.slider-item').find('.smallTitleCard');
   }
 
-  let tc = eltc.attr('data-ui-tracking-context');
-  if (tc) {
-    // parse track content json
-    let json = JSON.parse(unescape(tc));
-    // add video id to array
-    return parseInt(json.videoId);
-  }
-  return null;
+  let tc = eltc.attr('href');
+  let id = tc.match(/(?:\/watch\/)(\d+)(?:\?)/)[1];
+
+  return parseInt(id);
 }
 
 function rateVisibleItems(el) {

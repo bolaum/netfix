@@ -28,6 +28,9 @@ var CardFactory = (function() {
         // get info
         tmdbfunc(this.title, this.year, (data) => {
           if (data.results.length > 0) {
+            data.results.sort((a, b) => {
+              return b.vote_count - a.vote_count;
+            });
             this.rating = data.results[0].vote_average;
           } else {
             this.rating = NaN;
@@ -56,10 +59,11 @@ var CardFactory = (function() {
       if (this.data == 'notfetched') {
         this.data = 'fetching';
         NetflixAPI.getSingleVideoInfo(this.id, ['title', 'releaseYear', 'episodeCount'], (data) => {
+          // console.debug(data)
           if (data) {
             this.data = data;
             this.title = data.title;
-            this.year = data.year;
+            this.year = data.releaseYear;
             this.isShow = Number.isInteger(data.episodeCount);
           } else {
             this.data = null;
