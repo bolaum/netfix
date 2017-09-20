@@ -10,17 +10,39 @@ $(function () {
 });
 
 function getVideoId(el) {
-  // search title card in chilren
-  let eltc = $(el).find('.smallTitleCard');
-  if (eltc.length == 0) {
-    // search for title card in parents
-    eltc = $(el).parents('.slider-item').find('.smallTitleCard');
+  // try to get ptrack-content
+  let eltc = $(el).find('.ptrack-content');
+  if (eltc) {
+    if (eltc.length == 0) {
+      // search for track content in parents
+      eltc = $(el).parents('.slider-item').find('.ptrack-content');
+    }
+
+    let tc = eltc.attr('data-ui-tracking-context');
+    if (tc) {
+      // parse track content json
+      let json = JSON.parse(unescape(tc));
+      // add video id to array
+      let id = json.videoId || json.video_id;
+      return parseInt(json.video_id);
+    }
   }
 
-  let tc = eltc.attr('href');
-  let id = tc.match(/(?:\/watch\/)(\d+)(?:\?)/)[1];
+  // try to get title card
+  eltc = $(el).find('.smallTitleCard');
+  if (eltc) {
+    if (eltc.length == 0) {
+      // search for title card in parents
+      eltc = $(el).parents('.slider-item').find('.smallTitleCard');
+    }
 
-  return parseInt(id);
+    let tc = eltc.attr('href');
+    let id = tc.match(/(?:\/watch\/)(\d+)(?:\?)/)[1];
+
+    return parseInt(id);
+  }
+
+  return null;
 }
 
 function rateVisibleItems(el) {
