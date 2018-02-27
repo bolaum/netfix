@@ -52,6 +52,23 @@ https://www.themoviedb.org/
 
 ![TMDB](res/tmdb128.png)
 
+## Changelog
+
+**v0.5.3**
+- Add hyperlink to TMDB in ratings stars (awesome PR by [wassname](https://github.com/wassname)!)
+- Fix ratings on expanded cards
+
+**v0.5.2**
+- Fix ID scraping
+- Add more descriptive name and short name
+
+**v0.5.1**
+- Fix ID scraping
+- Prioritize most voted TMDB result when multiple values are returned
+
+**v0.5**
+- Initial release
+
 ## Disclaimer
 
 **Netfix Extension is not affiliated with Netflix.** Netflix product names are trademarks or registered trademarks of Netflix. This is an open project done with love, just for fun and no profit, but donations are most welcome!
