@@ -63,7 +63,7 @@ function rateSingleItem(el, insert_selector, check_visibility=true, rating_class
 
     card = CardFactory.new(id, (card) => {
       if (card) {
-        card.getRating((rating) => {
+        card.getDetails((rating, url) => {
           if (!isNaN(rating)) {
             // select parent to insert rating
             parent = $(el).find(insert_selector);
@@ -73,11 +73,13 @@ function rateSingleItem(el, insert_selector, check_visibility=true, rating_class
             $(el).find(insert_selector).append(
               `
               <div class="nf ${rating_class}">
+                <a href="${url}">
                 <div class="ratings">
                   <div class="empty-stars"></div>
                   <div class="full-stars" style="width:${rating*10}%"></div>
                   <div class='ratings-text'>${Math.round(rating * 10) / 10}</div>
                 </div>
+                </a>
               </div>
               `
             );
@@ -129,6 +131,3 @@ function main() {
   $('.mainView').observe('added', '.sliderContent', addSliderObservers)
 
 }
-
-
-
