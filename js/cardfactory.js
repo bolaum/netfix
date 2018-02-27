@@ -1,4 +1,6 @@
 var CardFactory = (function() {
+  const site_base = "https://www.themoviedb.org/";
+
   class Card {
     constructor(id) {
       this.id = id;
@@ -15,7 +17,7 @@ var CardFactory = (function() {
       this._fetchNfData()
     }
 
-    getRating(cb, priority=false) {
+    getDetails(cb, priority=false) {
       if (this.rating == 'notfetched') {
         // get function for movie or show
         let tmdbfunc = this.isShow ? TMDBAPI.getShow : TMDBAPI.getMovie;
@@ -32,18 +34,22 @@ var CardFactory = (function() {
               return b.vote_count - a.vote_count;
             });
             this.rating = data.results[0].vote_average;
+            this.tmdb_id = data.results[0].id;
+            this.url = site_base + (this.isShow ? 'tv' : 'movie') +'/' + this.tmdb_id
           } else {
             this.rating = NaN;
+            this.tmdb_id = NaN;
+            this.url = NaN;
             console.warn(`Data not found in TMDB (${this.id}): ${this.title} (${this.year})`);
           }
           // return rating
           for (let i = 0, len = this.ratingsCbCache.length; i < len; i++) {
-            this.ratingsCbCache.shift()(this.rating)
+            this.ratingsCbCache.shift()(this.rating, this.url)
           }
         }, priority);
       } else {
         // return cached rating
-        cb(this.rating);
+        cb(this.rating, this.url);
       }
     }
 
@@ -99,6 +105,3 @@ var CardFactory = (function() {
     new: create
   };
 })();
-
-
-
