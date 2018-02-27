@@ -24,7 +24,7 @@ function getVideoId(el) {
       let json = JSON.parse(unescape(tc));
       // add video id to array
       let id = json.videoId || json.video_id;
-      return parseInt(json.video_id);
+      return parseInt(id);
     }
   }
 
