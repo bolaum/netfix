@@ -47,6 +47,7 @@
   vertical-align: middle;
   display: inline-block;
   color: #b1b1b1;
+  z-index: 2;
   overflow: hidden;
   -webkit-mask-image: -webkit-radial-gradient(
     center, ellipse cover,
